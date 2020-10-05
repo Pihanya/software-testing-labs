@@ -8,69 +8,83 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BTreeTest {
-    public void fillTreeByData(BTree<Integer, String> bpt) {
-        bpt.insert(0, "a");
-        bpt.insert(1, "b");
-        bpt.insert(2, "c");
-        bpt.insert(3, "d");
-        bpt.insert(4, "e");
-        bpt.insert(5, "f");
-        bpt.insert(6, "g");
-        bpt.insert(7, "h");
-        bpt.insert(8, "i");
-        bpt.insert(9, "j");
+    public void fillTreeByData(BTree<Integer> bpt) {
+        bpt.add(0);
+        bpt.add(1);
+        bpt.add(2);
+        bpt.add(3);
+        bpt.add(4);
+        bpt.add(5);
+        bpt.add(6);
+        bpt.add(7);
+        bpt.add(8);
+        bpt.add(9);
+    }
+
+    @Test
+    public void testSizeEqualsInsertedValues() {
+        BTree<Integer> bpt = new BTree<>();
+        fillTreeByData(bpt);
+
+        assertEquals(bpt.size(), 10, "Size don't equal the inserted counts");
+    }
+
+    @Test
+    public void testSizeZeroAfterClear() {
+        BTree<Integer> bpt = new BTree<>();
+        fillTreeByData(bpt);
+
+        bpt.clear();
+
+        assertEquals(bpt.size(), 0, "Size isn't zero after clear");
     }
 
     @Test
     public void testInsertedValuesCanBeSearched() {
-        BTree<Integer, String> bpt = new BTree<Integer, String>(4);
+        BTree<Integer> bpt = new BTree<Integer>();
         fillTreeByData(bpt);
 
-        assertEquals(bpt.search(0), "a");
-        assertEquals(bpt.search(2), "c");
-        assertEquals(bpt.search(4), "e");
-        assertEquals(bpt.search(6), "g");
-        assertEquals(bpt.search(8), "i");
+        assertTrue(bpt.contains(0), "Unable to find existed key");
+        assertTrue(bpt.contains(2), "Unable to find existed key");
+        assertTrue(bpt.contains(4), "Unable to find existed key");
+        assertTrue(bpt.contains(6), "Unable to find existed key");
+        assertTrue(bpt.contains(8), "Unable to find existed key");
     }
 
     @Test
     public void testInsertedValuesCantBeSearched() {
-        BTree<Integer, String> bpt = new BTree<Integer, String>(4);
+        BTree<Integer> bpt = new BTree<Integer>();
         fillTreeByData(bpt);
 
-        bpt.delete(1);
-        bpt.delete(3);
-        bpt.delete(5);
-        bpt.delete(7);
-        bpt.delete(9);
+        bpt.remove(1);
+        bpt.remove(3);
+        bpt.remove(5);
+        bpt.remove(7);
+        bpt.remove(9);
 
-        assertNull(bpt.search(1));
-        assertNull(bpt.search(3));
-        assertNull(bpt.search(5));
-        assertNull(bpt.search(7));
-        assertNull(bpt.search(9));
+        assertFalse(bpt.contains(1), "Removed key was found");
+        assertFalse(bpt.contains(3), "Removed key was found");
+        assertFalse(bpt.contains(5), "Removed key was found");
+        assertFalse(bpt.contains(7), "Removed key was found");
+        assertFalse(bpt.contains(9), "Removed key was found");
     }
 
     @Test
-    public void testSearchRange() {
-        BTree<Integer, String> bpt = new BTree<Integer, String>(4);
-        fillTreeByData(bpt);
+    public void testOutputIsTheSameAsOnSite() {
+        BTree<Integer> bpt = new BTree<Integer>();
+//        fillTreeByData(bpt);
+        bpt.add(1);
+        bpt.add(2);
+        bpt.add(3);
+        bpt.add(4);
 
-        assertArrayEquals(
-                bpt.searchRange(3, BTree.RangePolicy.EXCLUSIVE, 7,
-                        BTree.RangePolicy.EXCLUSIVE).toArray(), new String[] { "e",
-                        "f", "g" });
-        assertArrayEquals(
-                bpt.searchRange(3, BTree.RangePolicy.INCLUSIVE, 7,
-                        BTree.RangePolicy.EXCLUSIVE).toArray(), new String[] { "d",
-                        "e", "f", "g" });
-        assertArrayEquals(
-                bpt.searchRange(3, BTree.RangePolicy.EXCLUSIVE, 7,
-                        BTree.RangePolicy.INCLUSIVE).toArray(), new String[] { "e",
-                        "f", "g", "h" });
-        assertArrayEquals(
-                bpt.searchRange(3, BTree.RangePolicy.INCLUSIVE, 7,
-                        BTree.RangePolicy.INCLUSIVE).toArray(), new String[] { "d",
-                        "e", "f", "g", "h" });
+        String expected = "└──3├──1,2└──4";
+
+        String actual = bpt.toString()
+                           .replace("\n", "")
+                           .replace(" ", "");
+
+        assertEquals(expected, actual);
+
     }
 }

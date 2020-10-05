@@ -1,0 +1,17 @@
+{
+  "name": "test#1",
+  "description": "desc",
+  "entries": [
+    { "key": 10, "value": "ten" },
+    { "key": 20, "value": "twenty" },
+    { "key": 50, "value": "fifty" },
+    { "key": 90, "value": "ninety" },
+    { "key": 15, "value": "fifteen" },
+    { "key": 8, "value": "eight" },
+    { "key": 17, "value": "seventeen" }
+  ],
+
+  "query": "FIND",
+  "queryEntry": { "key": 15 },
+  "actions": ["GO_RIGHT", "GO_LEFT", "GO_RIGHT"]
+}
